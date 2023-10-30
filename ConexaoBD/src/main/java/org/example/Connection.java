@@ -15,20 +15,37 @@ public class Connection {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conexao = DriverManager.getConnection("jdbc:mysql://bdcontador-pessoas.mysql.database.azure.com:3306/contadorpessoas", "wanderley", "Java&claudio");
-            ResultSet rsregistropython = conexao.createStatement().executeQuery("SELECT * FROM registropython");
-            while(rsregistropython.next())
-            {
-                System.out.println("Data: " + rsregistropython.getString("data_hora"));
+            // Consulta SQL para encontrar o dia com a maior contagem
+            ResultSet rs = conexao.createStatement().executeQuery(
+                    "SELECT DAY(data_hora) AS DiaComMaiorContagem, COUNT(*) AS Contagem " +
+                            "FROM registropython " +
+                            "GROUP BY DAY(data_hora) " +
+                            "ORDER BY Contagem DESC " +
+                            "LIMIT 1"
+            );
+
+            if (rs.next()) {
+                int dayWithMaxCount = rs.getInt("DiaComMaiorContagem");
+                int maxCount = rs.getInt("Contagem");
+
+                System.out.println("Dia com a maior contagem: Dia " + dayWithMaxCount + " com uma contagem de " + maxCount);
+            } else {
+                System.out.println("Nenhum dado encontrado.");
             }
         } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("Driver do banco de dados nao encontrado.");
+            System.out.println("Driver do banco de dados não encontrado.");
         } finally {
-            if (conexao != null) {
-                conexao.close();
+            try {
+                if (conexao != null) {
+                    conexao.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
         }
     }
+}
 
-  }
+
+
 
