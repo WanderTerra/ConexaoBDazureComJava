@@ -3,7 +3,7 @@ package org.example;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
@@ -108,6 +108,21 @@ public class Connection {
                 e.printStackTrace();
             }
         }
+    }
+    private static LocalDate getLastWeekStart() {
+        return LocalDate.now().minusWeeks(1).with(java.time.DayOfWeek.MONDAY);
+    }
+
+    private static LocalDate getLastWeekEnd() {
+        return LocalDate.now().minusWeeks(1).with(java.time.DayOfWeek.SUNDAY);
+    }
+
+    private static LocalDate getLastMonthStart() {
+        return LocalDate.now().minusMonths(1).withDayOfMonth(1);
+    }
+
+    private static LocalDate getLastMonthEnd() {
+        return LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth());
     }
 }
 
